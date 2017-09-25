@@ -1,6 +1,7 @@
 package appdevmodule.peelo.cathal.androidca1;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -106,6 +107,19 @@ public class LoadingActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+
+        //going to login
+        findViewById(R.id.dummy_button).setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                    // Create an explicit Intent for starting the MainActivity
+                    Intent loginActivityIntent = new Intent(LoadingActivity.this,
+                            LoginActivity.class);
+
+                    // Use the Intent to start the HelloAndroid Activity
+                    startActivity(loginActivityIntent);
+            }
+        });
     }
 
     @Override
