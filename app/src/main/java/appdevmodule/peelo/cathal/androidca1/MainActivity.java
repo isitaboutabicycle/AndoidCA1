@@ -46,11 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
         Button mApiButton = (Button) findViewById(R.id.apiButton);
 
-        mHistoryButton.setOnClickListener(new View.OnClickListener() {
+        mApiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: change to new activity class
-                Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
+                Intent mainActivityIntent = new Intent(MainActivity.this, ApiActivity.class);
 
                 startActivity(mainActivityIntent);
             }
