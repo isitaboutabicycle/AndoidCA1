@@ -42,7 +42,7 @@ public class ApiActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                //Intent retrieveFeedIntent = new Intent(ApiActivity.this, RetrieveFeedTask.class);
+                Intent retrieveFeedIntent = new Intent(ApiActivity.this, RetrieveFeedTask.class);
 
                 //startActivity(retrieveFeedIntent);
 
@@ -59,9 +59,11 @@ public class ApiActivity extends AppCompatActivity {
                  .
                  .
                  .
+                 .
                  } catch (JSONException e) {
                  // Appropriate error handling code
                  }
+
                  */
                 String readout = goldenRetriever.doInBackground();
                 TextView readoutHolder = (TextView) findViewById(R.id.responseView);
