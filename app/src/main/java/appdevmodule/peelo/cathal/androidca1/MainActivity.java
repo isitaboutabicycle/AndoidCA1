@@ -1,5 +1,6 @@
 package appdevmodule.peelo.cathal.androidca1;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,10 +9,56 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+
+        Button mHistoryButton = (Button) findViewById(R.id.historyButton);
+
+        mHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: change to new activity class
+                Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
+
+                startActivity(mainActivityIntent);
+            }
+        });
+
+        Button mJourneyButton = (Button) findViewById(R.id.journeyButton);
+
+        mJourneyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: change to new activity class
+                Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
+
+                startActivity(mainActivityIntent);
+            }
+        });
+
+        Button mApiButton = (Button) findViewById(R.id.apiButton);
+
+        mApiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: change to new activity class
+                Intent mainActivityIntent = new Intent(MainActivity.this, ApiActivity.class);
+
+                startActivity(mainActivityIntent);
+            }
+        });
+
+    }
+}
+/*
     private TextView mTextMessage;
     //private Fragment mFragment = null;
 
@@ -61,4 +108,4 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-}
+}*/

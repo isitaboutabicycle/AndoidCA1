@@ -1,4 +1,4 @@
-package appdevmodule.peelo.cathal.androidca1;
+/*package appdevmodule.peelo.cathal.androidca1;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -20,7 +20,7 @@ import java.util.List;
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
- */
+ *//*
 public class HistoryFragment extends Fragment {
 
     // TODO: Customize parameter argument names
@@ -32,7 +32,7 @@ public class HistoryFragment extends Fragment {
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
-     */
+     *//*
     public HistoryFragment() {
     }
 
@@ -101,9 +101,9 @@ public class HistoryFragment extends Fragment {
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
-     */
+     *//*
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
     }
-}
+}*/

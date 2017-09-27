@@ -14,24 +14,35 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/message"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/historyButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/title_journeyHistory" />
+            android:layout_gravity="center_horizontal"
+            android:hapticFeedbackEnabled="true"
+            android:text="View Journey History" />
 
+        <Button
+            android:id="@+id/journeyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:text="Create New Journey" />
+
+        <Button
+            android:id="@+id/apiButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="View API Data" />
     </FrameLayout>
 
-    <android.support.design.widget.BottomNavigationView
+    <!--<android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation" />-->
 
 </LinearLayout>
