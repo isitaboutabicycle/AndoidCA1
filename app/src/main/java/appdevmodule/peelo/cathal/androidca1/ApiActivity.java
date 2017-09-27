@@ -42,13 +42,27 @@ public class ApiActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent retrieveFeedIntent = new Intent(ApiActivity.this, RetrieveFeedTask.class);
+                //Intent retrieveFeedIntent = new Intent(ApiActivity.this, RetrieveFeedTask.class);
 
                 //startActivity(retrieveFeedIntent);
 
                 RetrieveFeedTask goldenRetriever = new RetrieveFeedTask();
 
                 goldenRetriever.onPreExecute();
+                /* for parsing JSON into an object
+
+                 try {
+                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                 String requestID = object.getString("requestId");
+                 int likelihood = object.getInt("likelihood");
+                 JSONArray photos = object.getJSONArray("photos");
+                 .
+                 .
+                 .
+                 } catch (JSONException e) {
+                 // Appropriate error handling code
+                 }
+                 */
                 String readout = goldenRetriever.doInBackground();
                 TextView readoutHolder = (TextView) findViewById(R.id.responseView);
                 readoutHolder.setText(readout);
@@ -71,7 +85,7 @@ public class ApiActivity extends AppCompatActivity {
         protected String doInBackground(Void... urls) {
 
             try {
-                URL url = new URL("https://api.jcdecaux.com/vls/v1/stations?contract=Dublin" + "&apiKey=" + "fcd108bd549949a9d7ee003a683cdece0fea1ff2");
+                URL url = new URL("https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fcd108bd549949a9d7ee003a683cdece0fea1ff2");
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
@@ -95,7 +109,7 @@ public class ApiActivity extends AppCompatActivity {
 
         protected void onPostExecute(String response) {
             if(response == null) {
-                response = "THERE WAS AN ERROR";
+                response = "Oops, that didn't go to plan";
             }
             findViewById(R.id.progressBar).setVisibility(View.GONE);
             Log.i("INFO", response);
