@@ -72,6 +72,23 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/prompt_register"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:paddingTop="@dimen/text_margin"/>
+
+            <Button
+                android:id="@+id/register_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/action_register"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -39,7 +39,8 @@
         <activity
             android:name=".JourneyHistoryActivity"
             android:label="@string/title_activity_journey_history"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".RegisterActivity"></activity>
     </application>
 
 </manifest>
