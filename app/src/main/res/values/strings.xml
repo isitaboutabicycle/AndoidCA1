@@ -22,4 +22,5 @@
         completions."
     </string>
     <string name="title_activity_api">ApiActivity</string>
+    <string name="title_activity_journey_history">JourneyHistoryActivity</string>
 </resources>
