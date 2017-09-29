@@ -13,12 +13,36 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
+
+    private FirebaseAuth firebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        if(firebaseAuth.getCurrentUser() == null)
+        {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        TextView mainWelcome = (TextView) findViewById(R.id.mainWelcome);
+        if(user.getDisplayName() != null)
+        {
+            mainWelcome.setText("Welcome back " + user.getDisplayName() + "!");
+        }
+        else
+        {
+            mainWelcome.setText("Welcome back " + user.getEmail() + "!");
+        }
 
         Button mHistoryButton = (Button) findViewById(R.id.historyButton);
 
@@ -26,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO: change to new activity class
-                Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
+                Intent journeyHistoryIntent = new Intent(MainActivity.this, JourneyHistoryActivity.class);
 
-                startActivity(mainActivityIntent);
+                startActivity(journeyHistoryIntent);
             }
         });
 
@@ -38,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO: change to new activity class
-                Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
+                Intent addJourneyIntent = new Intent(MainActivity.this, AddJourneyActivity.class);
 
-                startActivity(mainActivityIntent);
+                startActivity(addJourneyIntent);
             }
         });
 
@@ -50,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO: change to new activity class
-                Intent mainActivityIntent = new Intent(MainActivity.this, ApiActivity.class);
+                Intent apiIntent = new Intent(MainActivity.this, ApiActivity.class);
 
-                startActivity(mainActivityIntent);
+                startActivity(apiIntent);
             }
         });
 

@@ -42,7 +42,7 @@ public class ApiActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent retrieveFeedIntent = new Intent(ApiActivity.this, RetrieveFeedTask.class);
+                //Intent retrieveFeedIntent = new Intent(ApiActivity.this, RetrieveFeedTask.class);
 
                 //startActivity(retrieveFeedIntent);
 

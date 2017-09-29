@@ -40,7 +40,8 @@
             android:name=".JourneyHistoryActivity"
             android:label="@string/title_activity_journey_history"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".AddJourneyActivity"></activity>
     </application>
 
 </manifest>

@@ -1,6 +1,8 @@
 package appdevmodule.peelo.cathal.androidca1;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,13 +44,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
 
-        buttonRegister.setOnClickListener(this);
-
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    registerUser();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
-    private void registerUser()
-    {
+    private void registerUser() throws InterruptedException {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
@@ -65,16 +74,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         progressDialog.setMessage("Registering new user...");
         progressDialog.show();
+        Thread.sleep(1000);
+
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+                            progressDialog.hide();
                             Toast.makeText(RegisterActivity.this, "Registered successfully!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            finish();
+                            startActivity(intent);
                         }
                         else
                         {
+                            progressDialog.hide();
                             Toast.makeText(RegisterActivity.this, "Failed to register", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -83,6 +99,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        registerUser();
+        try {
+            registerUser();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 }

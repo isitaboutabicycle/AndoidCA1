@@ -116,6 +116,7 @@ public class LoadingActivity extends AppCompatActivity {
                     Intent loginActivityIntent = new Intent(LoadingActivity.this,
                             LoginActivity.class);
 
+                    finish();
                     // Use the Intent to start the HelloAndroid Activity
                     startActivity(loginActivityIntent);
             }
