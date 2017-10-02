@@ -68,6 +68,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Button mEmailSignInButton;
+    private Button mRegisterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,18 +101,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });*/
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-
-        //TODO: delete after firebasification
-        /*mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mainActivityIntent = new Intent(LoginActivity.this, MainActivity.class);
-
-                finish();
-                startActivity(mainActivityIntent);
-            }
-        });*/
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -120,7 +111,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         //bringing the user to the registration screen
-        Button mRegisterButton = (Button) findViewById(R.id.register_button);
+        mRegisterButton = (Button) findViewById(R.id.register_button);
+        mRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent skipActivityIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+
+                startActivity(skipActivityIntent);
+            }
+        });
+
+        //TODO: delete once the login works!
+        Button mSkipButton = (Button) findViewById(R.id.action_skip);
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

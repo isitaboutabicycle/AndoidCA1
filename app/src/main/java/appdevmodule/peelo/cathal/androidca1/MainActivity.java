@@ -27,58 +27,59 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        if(firebaseAuth.getCurrentUser() == null)
-        {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        if (user == null) {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
-
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        TextView mainWelcome = (TextView) findViewById(R.id.mainWelcome);
-        if(user.getDisplayName() != null)
-        {
-            mainWelcome.setText("Welcome back " + user.getDisplayName() + "!");
-        }
         else
         {
-            mainWelcome.setText("Welcome back " + user.getEmail() + "!");
+
+            TextView mainWelcome = (TextView) findViewById(R.id.mainWelcome);
+            if (user.getDisplayName() != null) {
+                mainWelcome.setText("Welcome back " + user.getDisplayName() + "!");
+            } else {
+                mainWelcome.setText("Welcome back " + user.getEmail() + "!");
+            }
+
+            Button mHistoryButton = (Button) findViewById(R.id.historyButton);
+
+            mHistoryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: change to new activity class
+                    Intent journeyHistoryIntent = new Intent(MainActivity.this, JourneyHistoryActivity.class);
+
+                    startActivity(journeyHistoryIntent);
+                }
+            });
+
+            Button mJourneyButton = (Button) findViewById(R.id.journeyButton);
+
+            mJourneyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: change to new activity class
+                    Intent addJourneyIntent = new Intent(MainActivity.this, AddJourneyActivity.class);
+
+                    startActivity(addJourneyIntent);
+                }
+            });
+
+            Button mApiButton = (Button) findViewById(R.id.apiButton);
+
+            mApiButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: change to new activity class
+                    Intent apiIntent = new Intent(MainActivity.this, ApiActivity.class);
+
+                    startActivity(apiIntent);
+                }
+            });
+
         }
-
-        Button mHistoryButton = (Button) findViewById(R.id.historyButton);
-
-        mHistoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: change to new activity class
-                Intent journeyHistoryIntent = new Intent(MainActivity.this, JourneyHistoryActivity.class);
-
-                startActivity(journeyHistoryIntent);
-            }
-        });
-
-        Button mJourneyButton = (Button) findViewById(R.id.journeyButton);
-
-        mJourneyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: change to new activity class
-                Intent addJourneyIntent = new Intent(MainActivity.this, AddJourneyActivity.class);
-
-                startActivity(addJourneyIntent);
-            }
-        });
-
-        Button mApiButton = (Button) findViewById(R.id.apiButton);
-
-        mApiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: change to new activity class
-                Intent apiIntent = new Intent(MainActivity.this, ApiActivity.class);
-
-                startActivity(apiIntent);
-            }
-        });
 
     }
 }
