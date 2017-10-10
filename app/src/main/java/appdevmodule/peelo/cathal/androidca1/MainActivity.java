@@ -26,21 +26,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        if (user == null) {
+        String username = null;
+
+        if(null != user)
+        { username = user.getDisplayName(); }
+
+        //TODO:uncommnet if/else after authentication works
+        /*
+        if (null == user) {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
         else
         {
-
+*/
             TextView mainWelcome = (TextView) findViewById(R.id.mainWelcome);
-            if (user.getDisplayName() != null) {
-                mainWelcome.setText("Welcome back " + user.getDisplayName() + "!");
+            if (null != username) {
+                mainWelcome.setText("Welcome back " + username + "!");
             } else {
-                mainWelcome.setText("Welcome back " + user.getEmail() + "!");
+                mainWelcome.setText("Welcome back!");
             }
 
             Button mHistoryButton = (Button) findViewById(R.id.historyButton);
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        }
+        //}
 
     }
 }

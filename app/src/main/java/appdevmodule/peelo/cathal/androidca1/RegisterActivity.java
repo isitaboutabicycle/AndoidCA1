@@ -74,7 +74,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         progressDialog.setMessage("Registering new user...");
         progressDialog.show();
-        Thread.sleep(1000);
 
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)

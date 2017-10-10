@@ -115,20 +115,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mRegisterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent skipActivityIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                Intent RegisterActivityIntent = new Intent(LoginActivity.this, RegisterActivity.class);
 
-                startActivity(skipActivityIntent);
+                startActivity(RegisterActivityIntent);
             }
         });
 
         //TODO: delete once the login works!
         Button mSkipButton = (Button) findViewById(R.id.action_skip);
-        mRegisterButton.setOnClickListener(new OnClickListener() {
+        mSkipButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent registerActivityIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                Intent skipActivityIntent = new Intent(LoginActivity.this, MainActivity.class);
 
-                startActivity(registerActivityIntent);
+                startActivity(skipActivityIntent);
             }
         });
 
@@ -245,6 +245,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                             }
+
                         }
                     });
         }

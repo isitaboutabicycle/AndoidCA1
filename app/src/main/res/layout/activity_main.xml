@@ -8,25 +8,21 @@
     android:orientation="vertical"
     tools:context="appdevmodule.peelo.cathal.androidca1.MainActivity">
 
-
-    <FrameLayout
-        android:id="@+id/contentMain"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:id="@+id/mainWelcome"
+            android:layout_margin="16dp"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Button
             android:id="@+id/historyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center_vertical|center_horizontal"
             android:hapticFeedbackEnabled="true"
+            android:layout_margin="8dp"
             android:text="View Journey History" />
 
         <Button
@@ -34,15 +30,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
+            android:hapticFeedbackEnabled="true"
+            android:layout_margin="8dp"
             android:text="Create New Journey" />
 
         <Button
             android:id="@+id/apiButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:hapticFeedbackEnabled="true"
+            android:layout_margin="8dp"
             android:text="View API Data" />
-    </FrameLayout>
 
     <!--<android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
