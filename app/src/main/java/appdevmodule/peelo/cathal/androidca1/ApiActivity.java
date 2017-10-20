@@ -59,9 +59,11 @@ public class ApiActivity extends AppCompatActivity {
                  .
                  .
                  .
+                 .
                  } catch (JSONException e) {
                  // Appropriate error handling code
                  }
+
                  */
                 String readout = goldenRetriever.doInBackground();
                 TextView readoutHolder = (TextView) findViewById(R.id.responseView);

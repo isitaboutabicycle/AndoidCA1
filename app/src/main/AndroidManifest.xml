@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -36,7 +35,13 @@
         <activity
             android:name=".ApiActivity"
             android:label="@string/title_activity_api"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".JourneyHistoryActivity"
+            android:label="@string/title_activity_journey_history"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".AddJourneyActivity"></activity>
     </application>
 
 </manifest>

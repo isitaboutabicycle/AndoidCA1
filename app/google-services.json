@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "14669395501",
+    "firebase_url": "https://anroidca1.firebaseio.com",
+    "project_id": "anroidca1",
+    "storage_bucket": "anroidca1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14669395501:android:07980288883398d4",
+        "android_client_info": {
+          "package_name": "appdevmodule.peelo.cathal.androidca1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14669395501-2kk0hf33j21eg6jscmlov76afb2f5ctv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5VPEvNj5QC7eXPksvbQT7JyVkBDp4FgQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

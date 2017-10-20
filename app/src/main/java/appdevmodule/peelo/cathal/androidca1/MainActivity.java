@@ -13,48 +13,79 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
+
+    private FirebaseAuth firebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        Button mHistoryButton = (Button) findViewById(R.id.historyButton);
+        String username = null;
 
-        mHistoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: change to new activity class
-                Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
+        if(null != user)
+        { username = user.getDisplayName(); }
 
-                startActivity(mainActivityIntent);
+        //TODO:uncommnet if/else after authentication works
+        /*
+        if (null == user) {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+        else
+        {
+*/
+            TextView mainWelcome = (TextView) findViewById(R.id.mainWelcome);
+            if (null != username) {
+                mainWelcome.setText("Welcome back " + username + "!");
+            } else {
+                mainWelcome.setText("Welcome back!");
             }
-        });
 
-        Button mJourneyButton = (Button) findViewById(R.id.journeyButton);
+            Button mHistoryButton = (Button) findViewById(R.id.historyButton);
 
-        mJourneyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: change to new activity class
-                Intent mainActivityIntent = new Intent(MainActivity.this, MainActivity.class);
+            mHistoryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: change to new activity class
+                    Intent journeyHistoryIntent = new Intent(MainActivity.this, JourneyHistoryActivity.class);
 
-                startActivity(mainActivityIntent);
-            }
-        });
+                    startActivity(journeyHistoryIntent);
+                }
+            });
 
-        Button mApiButton = (Button) findViewById(R.id.apiButton);
+            Button mJourneyButton = (Button) findViewById(R.id.journeyButton);
 
-        mApiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: change to new activity class
-                Intent mainActivityIntent = new Intent(MainActivity.this, ApiActivity.class);
+            mJourneyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: change to new activity class
+                    Intent addJourneyIntent = new Intent(MainActivity.this, AddJourneyActivity.class);
 
-                startActivity(mainActivityIntent);
-            }
-        });
+                    startActivity(addJourneyIntent);
+                }
+            });
+
+            Button mApiButton = (Button) findViewById(R.id.apiButton);
+
+            mApiButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: change to new activity class
+                    Intent apiIntent = new Intent(MainActivity.this, ApiActivity.class);
+
+                    startActivity(apiIntent);
+                }
+            });
+
+        //}
 
     }
 }
