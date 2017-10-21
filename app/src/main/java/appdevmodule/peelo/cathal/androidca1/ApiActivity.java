@@ -9,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -34,17 +37,19 @@ import static appdevmodule.peelo.cathal.androidca1.R.id.responseView;
 public class ApiActivity extends AppCompatActivity {
 
     int feedCode = 1;
-    TextView readout = null;
+    ListView readout = null;
     //a list of HashMaps to store data from the JSON in
-    ArrayList<HashMap<String, String>> stationsList;
+    //ArrayList<HashMap<String, String>> stationsList;
+    ArrayList<String> stationsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_api);
 
-        readout = (TextView) findViewById(R.id.responseView);
-        stationsList = new ArrayList<HashMap<String, String>>();
+        readout = (ListView) findViewById(R.id.responseView);
+        //stationsList = new ArrayList<HashMap<String, String>>();
+        stationsList = new ArrayList<String>();
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -79,12 +84,13 @@ public class ApiActivity extends AppCompatActivity {
         });
     }
 
+    /*
     private void setReadout(String filling){
         if (readout != null){
             readout.setText(filling);
         }
     }
-
+*/
 
 
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
@@ -92,7 +98,7 @@ public class ApiActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();//from helper
             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-            setReadout("");
+            //setReadout("");
         }
 
         protected String doInBackground(Void... urls) {
@@ -116,7 +122,8 @@ public class ApiActivity extends AppCompatActivity {
                     //parsing the response to a string
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line).append("\n");
+                        stringBuilder.append(line);//.append("\n");
+                        Log.i("INFO", line);
                     }
                     bufferedReader.close();
                     response = stringBuilder.toString();
@@ -124,9 +131,9 @@ public class ApiActivity extends AppCompatActivity {
                     //parsing the string to objects
                     if (response != null){
 
-                        JSONObject jsonObject = new JSONObject(response);
+                        //JSONObject jsonObject = new JSONObject(response);
 
-                        JSONArray stations = jsonObject.getJSONArray("stations");
+                        JSONArray stations = new JSONArray(response);
 
                         for(int i = 0; i < stations.length(); i++) {
 
@@ -141,14 +148,20 @@ public class ApiActivity extends AppCompatActivity {
                             //creating a key/value hashmap for the station
                             HashMap<String, String> station = new HashMap<String, String>();
 
+                            String parsedResponse = "Address:\t" + address +
+                                    "\nStatus:\t" + status +
+                                    "\nBikes Free:\t" + availableBikes +
+                                    "\nStands Free:\t" + availableStands + "\n";
+
                             //adding each keyvalue pair to the HashMap
-                            station.put("Address", address);
-                            station.put("Status", status);
-                            station.put("Bikes Free", availableBikes);
-                            station.put("Stands Free", availableStands);
+                            station.put("address", address);
+                            station.put("status", status);
+                            station.put("bikesFree", availableBikes);
+                            station.put("standsFree", availableStands);
 
                             //saving station
-                            stationsList.add(station);
+                            //stationsList.add(station);
+                            stationsList.add(parsedResponse);
                         }
                     }
                 }
@@ -167,15 +180,30 @@ public class ApiActivity extends AppCompatActivity {
         protected void onPostExecute(String response) {
             super.onPostExecute(response);
 
+            /*/TODO: update this if statement
             if(response == null)
-            { response = "Oops, that didn't go to plan"; }
+            { response = "Oops, that didn't go to plan"; }*/
 
             findViewById(R.id.progressBar).setVisibility(View.GONE);
 
             Log.i("INFO", response);
 
+            try{
+                ArrayAdapter adapter = new ArrayAdapter<String>(ApiActivity.this, R.layout.station_list_view,
+                        stationsList
+                        //        new String[]{"address", "status", "bikesFree", "standsFree"}
+                        //        new String[]{R.id.address, R.id.status, R.id.bikesFree, R.id.standsFree}
+                );
+
+                readout.setAdapter(adapter);
+            }
+            catch(Exception e)
+            {
+                Log.i("INFO", e.getMessage());
+            }
+
             //Setting the TextView to the response string
-            setReadout(response);
+            //setReadout(response);
         }
     }
 }
