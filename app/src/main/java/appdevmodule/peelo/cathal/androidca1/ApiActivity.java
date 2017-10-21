@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
@@ -23,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static appdevmodule.peelo.cathal.androidca1.R.id.progressBar;
 import static appdevmodule.peelo.cathal.androidca1.R.id.queryButton;
@@ -32,7 +35,8 @@ public class ApiActivity extends AppCompatActivity {
 
     int feedCode = 1;
     TextView readout = null;
-    ArrayList bikes;
+    //a list of HashMaps to store data from the JSON in
+    ArrayList<HashMap<String, String>> stationsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,26 +44,21 @@ public class ApiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_api);
 
         readout = (TextView) findViewById(R.id.responseView);
-        bikes = new ArrayList<>();
+        stationsList = new ArrayList<HashMap<String, String>>();
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
-        //RetrieveFeedTask taskThingumy = new RetrieveFeedTask();
         Button doTheThing = (Button) findViewById(R.id.queryButton);
 
         doTheThing.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                //Intent retrieveFeedIntent = new Intent(ApiActivity.this, RetrieveFeedTask.class);
-
-                //startActivity(retrieveFeedIntent);
 
                 RetrieveFeedTask goldenRetriever = new RetrieveFeedTask();
 
-                //goldenRetriever.onPreExecute();
-                goldenRetriever.execute();//from helper
+                goldenRetriever.execute();
                 /* for parsing JSON into an object
 
                  try {
@@ -76,12 +75,8 @@ public class ApiActivity extends AppCompatActivity {
                  }
 
                  */
-                //String json = goldenRetriever.doInBackground();
-                //setReadout(json);
-                //goldenRetriever.onPostExecute(json);
             }
         });
-
     }
 
     private void setReadout(String filling){
@@ -93,9 +88,6 @@ public class ApiActivity extends AppCompatActivity {
 
 
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
-
-        //private Exception exception;
-        //String json = null;
 
         protected void onPreExecute() {
             super.onPreExecute();//from helper
@@ -121,7 +113,7 @@ public class ApiActivity extends AppCompatActivity {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(myBIS));
                     StringBuilder stringBuilder = new StringBuilder();
 
-                    //parsing the response
+                    //parsing the response to a string
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line).append("\n");
@@ -129,8 +121,36 @@ public class ApiActivity extends AppCompatActivity {
                     bufferedReader.close();
                     response = stringBuilder.toString();
 
-                    //if (response != null)
+                    //parsing the string to objects
+                    if (response != null){
 
+                        JSONObject jsonObject = new JSONObject(response);
+
+                        JSONArray stations = jsonObject.getJSONArray("stations");
+
+                        for(int i = 0; i < stations.length(); i++) {
+
+                            JSONObject obj = stations.getJSONObject(i);
+
+                            //getting value strings from the obj
+                            String address = obj.getString("address");
+                            String status = obj.getString("status");
+                            String availableBikes = obj.getString("available_bikes");
+                            String availableStands = obj.getString("available_bike_stands");
+
+                            //creating a key/value hashmap for the station
+                            HashMap<String, String> station = new HashMap<String, String>();
+
+                            //adding each keyvalue pair to the HashMap
+                            station.put("Address", address);
+                            station.put("Status", status);
+                            station.put("Bikes Free", availableBikes);
+                            station.put("Stands Free", availableStands);
+
+                            //saving station
+                            stationsList.add(station);
+                        }
+                    }
                 }
                 finally{
                     urlConnection.disconnect();
@@ -145,9 +165,11 @@ public class ApiActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String response) {
-            if(response == null) {
-                response = "Oops, that didn't go to plan";
-            }
+            super.onPostExecute(response);
+
+            if(response == null)
+            { response = "Oops, that didn't go to plan"; }
+
             findViewById(R.id.progressBar).setVisibility(View.GONE);
 
             Log.i("INFO", response);
@@ -156,6 +178,4 @@ public class ApiActivity extends AppCompatActivity {
             setReadout(response);
         }
     }
-
-
 }
