@@ -151,6 +151,8 @@ public class ApiActivity extends AppCompatActivity {
             findViewById(R.id.progressBar).setVisibility(View.GONE);
 
             Log.i("INFO", response);
+
+            //Setting the TextView to the response string
             setReadout(response);
         }
     }
