@@ -18,7 +18,7 @@
 
         <Button
             android:id="@+id/historyButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:hapticFeedbackEnabled="true"
@@ -27,7 +27,7 @@
 
         <Button
             android:id="@+id/journeyButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:hapticFeedbackEnabled="true"
@@ -36,7 +36,7 @@
 
         <Button
             android:id="@+id/apiButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
             android:hapticFeedbackEnabled="true"
