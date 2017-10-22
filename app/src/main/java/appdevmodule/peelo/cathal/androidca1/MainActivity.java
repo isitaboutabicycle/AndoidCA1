@@ -28,23 +28,17 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        String username = null;
-
-        if(null != user)
-        { username = user.getDisplayName(); }
-
-        //TODO:uncommnet if/else after authentication works
-        /*
         if (null == user) {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
         else
         {
-*/
+            String id = user.getEmail();
+
             TextView mainWelcome = (TextView) findViewById(R.id.mainWelcome);
-            if (null != username) {
-                mainWelcome.setText("Welcome back " + username + "!");
+            if (null != id) {
+                mainWelcome.setText("Welcome back " + id + "!");
             } else {
                 mainWelcome.setText("Welcome back!");
             }
@@ -54,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
             mHistoryButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: change to new activity class
                     Intent journeyHistoryIntent = new Intent(MainActivity.this, JourneyHistoryActivity.class);
 
                     startActivity(journeyHistoryIntent);
@@ -66,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             mJourneyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: change to new activity class
                     Intent addJourneyIntent = new Intent(MainActivity.this, AddJourneyActivity.class);
 
                     startActivity(addJourneyIntent);
@@ -78,14 +70,26 @@ public class MainActivity extends AppCompatActivity {
             mApiButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: change to new activity class
                     Intent apiIntent = new Intent(MainActivity.this, ApiActivity.class);
 
                     startActivity(apiIntent);
                 }
             });
 
-        //}
+            Button logoutButton = (Button) findViewById(R.id.logoutButton);
+
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                    public void onClick(View v) {
+
+                    firebaseAuth.signOut();
+                    finish();
+
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                }
+        });
+
+        }
 
     }
 }

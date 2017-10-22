@@ -9,6 +9,9 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -87,6 +90,14 @@ public class LoadingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //If already logged in, redirect to Main Activity
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (null != user) {
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+        }
 
         setContentView(R.layout.activity_loading);
 

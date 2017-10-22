@@ -9,7 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <EditText
             android:id="@+id/editTextStartLat"
@@ -32,10 +33,16 @@
             android:layout_height="wrap_content"
             android:hint="Enter end longitude" />
         <EditText
-            android:id="@+id/editTextDate"
+            android:id="@+id/textDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter date" />
+        <!--<Button
+            android:id="@+id/setDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set Date"
+            android:layout_gravity="center"/-->
         <EditText
             android:id="@+id/editTextPics"
             android:layout_width="match_parent"
@@ -46,7 +53,8 @@
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Journey"
+            android:layout_marginTop="32dp"
+            android:text="Confirm Journey Details"
             android:layout_gravity="center"/>
 
     </LinearLayout>

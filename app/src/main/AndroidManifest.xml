@@ -34,14 +34,16 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".ApiActivity"
-            android:label="@string/title_activity_api"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_api"/>
+            <!--android:theme="@style/AppTheme.NoActionBar"-->
         <activity
             android:name=".JourneyHistoryActivity"
-            android:label="@string/title_activity_journey_history"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".AddJourneyActivity"></activity>
+            android:label="@string/title_activity_journey_history"/>
+            <!--android:theme="@style/AppTheme.NoActionBar" -->
+        <activity android:name=".RegisterActivity"
+            android:label="Register"/>
+        <activity android:name=".AddJourneyActivity"
+            android:label="New Journey"/>
     </application>
 
 </manifest>

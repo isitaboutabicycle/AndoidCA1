@@ -41,7 +41,16 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:hapticFeedbackEnabled="true"
             android:layout_margin="8dp"
-            android:text="View API Data" />
+            android:text="View Real Time Info" />
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:hapticFeedbackEnabled="true"
+            android:layout_margin="32dp"
+            android:text="Log Out" />
 
     <!--<android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
