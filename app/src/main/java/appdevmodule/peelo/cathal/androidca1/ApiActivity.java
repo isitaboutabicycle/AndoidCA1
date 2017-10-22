@@ -138,24 +138,29 @@ public class ApiActivity extends AppCompatActivity {
                         for(int i = 0; i < stations.length(); i++) {
 
                             JSONObject obj = stations.getJSONObject(i);
+                            JSONObject posobj = obj.getJSONObject("position");
 
                             //getting value strings from the obj
                             String address = obj.getString("address");
-                            String status = obj.getString("status");
+                            String lat = posobj.getString("lat");
+                            String lng = posobj.getString("lng");
                             String availableBikes = obj.getString("available_bikes");
                             String availableStands = obj.getString("available_bike_stands");
 
                             //creating a key/value hashmap for the station
                             HashMap<String, String> station = new HashMap<String, String>();
 
-                            String parsedResponse = "Address:\t" + address +
-                                    "\nStatus:\t" + status +
-                                    "\nBikes Free:\t" + availableBikes +
-                                    "\nStands Free:\t" + availableStands + "\n";
+                            String parsedResponse =
+                                      "Station:\t\t\t\t" + address +
+                                    "\nLatitude:\t\t\t" + lat +
+                                    "\nLongitude:\t\t" + lng +
+                                    "\nFree Bikes:\t\t" + availableBikes +
+                                    "\nFree Stands:\t\t" + availableStands;
 
                             //adding each keyvalue pair to the HashMap
                             station.put("address", address);
-                            station.put("status", status);
+                            station.put("latitude", lat);
+                            station.put("longitude", lng);
                             station.put("bikesFree", availableBikes);
                             station.put("standsFree", availableStands);
 
@@ -180,9 +185,8 @@ public class ApiActivity extends AppCompatActivity {
         protected void onPostExecute(String response) {
             super.onPostExecute(response);
 
-            /*/TODO: update this if statement
             if(response == null)
-            { response = "Oops, that didn't go to plan"; }*/
+            { stationsList.add("Oops, JCDecaux aren't talking to us..."); }
 
             findViewById(R.id.progressBar).setVisibility(View.GONE);
 
