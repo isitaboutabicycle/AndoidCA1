@@ -64,41 +64,17 @@ public class ApiActivity extends AppCompatActivity {
                 RetrieveFeedTask goldenRetriever = new RetrieveFeedTask();
 
                 goldenRetriever.execute();
-                /* for parsing JSON into an object
-
-                 try {
-                 JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
-                 String requestID = object.getString("requestId");
-                 int likelihood = object.getInt("likelihood");
-                 JSONArray photos = object.getJSONArray("photos");
-                 .
-                 .
-                 .
-                 .
-                 } catch (JSONException e) {
-                 // Appropriate error handling code
-                 }
-
-                 */
             }
         });
     }
 
-    /*
-    private void setReadout(String filling){
-        if (readout != null){
-            readout.setText(filling);
-        }
-    }
-*/
 
 
     class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
 
         protected void onPreExecute() {
-            super.onPreExecute();//from helper
+            super.onPreExecute();
             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-            //setReadout("");
         }
 
         protected String doInBackground(Void... urls) {
@@ -112,8 +88,6 @@ public class ApiActivity extends AppCompatActivity {
 
                 try {
                     InputStream myIS = urlConnection.getInputStream();
-                    //InputStreamReader myISReader = new InputStreamReader(myIS);
-                    //BufferedReader bufferedReader = new BufferedReader(myISReader);
                     InputStream myBIS = new BufferedInputStream(myIS);
 
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(myBIS));
