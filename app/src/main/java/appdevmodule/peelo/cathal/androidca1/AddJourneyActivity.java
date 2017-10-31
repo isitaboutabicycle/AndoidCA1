@@ -1,17 +1,12 @@
 package appdevmodule.peelo.cathal.androidca1;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Paint;
-import android.media.Image;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,12 +19,10 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,19 +32,20 @@ import java.util.Locale;
 public class AddJourneyActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth firebaseAuth;
-
     private DatabaseReference databaseReference;
+    String currentFilePath;
 
     private EditText editTextStartLat, editTextStartLong, editTextEndLat, editTextEndLong;
-    private TextView textDate;
+    private TextView textDate, picsView;
     private Button addPics, addButton;
 
+    private Calendar newCalendar;
     private DatePickerDialog datePickerDialog;
     private SimpleDateFormat dateFormatter;
-    private static int REQUEST_IMAGE = 0;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private File currentPic;
-    private ArrayList<Image> pics;
+    private ArrayList<Bitmap> pics;
     private Calendar date;
 
     @Override
@@ -66,8 +60,8 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             startActivity(new Intent(this, LoginActivity.class));
         }
 
+        //why the italics?
         databaseReference = FirebaseDatabase.getInstance().getReference();
-
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
 
         editTextStartLat = (EditText) findViewById(R.id.editTextStartLat);
@@ -75,8 +69,15 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
         editTextEndLat = (EditText) findViewById(R.id.editTextEndLat);
         editTextEndLong = (EditText) findViewById(R.id.editTextEndLong);
         textDate = (TextView) findViewById(R.id.textDate);
+        picsView = (TextView) findViewById(R.id.picsView);
         addPics = (Button) findViewById(R.id.addPicsButton);
         addButton = (Button) findViewById(R.id.addButton);
+
+        //TODO: remove these hard-coded values
+        editTextStartLat.setText("2");
+        editTextStartLong.setText("2");
+        editTextEndLat.setText("2");
+        editTextEndLong.setText("2");
 
         textDate.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -86,7 +87,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
         });
 
         //getting current date...?
-        Calendar newCalender = Calendar.getInstance();
+        newCalendar = Calendar.getInstance();
 
         //listener and method to feed into datePickerDialog
         DatePickerDialog.OnDateSetListener myODSListener = new DatePickerDialog.OnDateSetListener() {
@@ -101,13 +102,20 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
         };
 
         //feeding it in...
-        datePickerDialog = new DatePickerDialog(this, myODSListener, newCalender.get(Calendar.YEAR), newCalender.get(Calendar.MONTH),
-                newCalender.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog = new DatePickerDialog(this, myODSListener, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH),
+                newCalendar.get(Calendar.DAY_OF_MONTH));
 
-        //TODO: change to start gallery for result
-        //addPics
-        pics = new ArrayList<Image>();
+        pics = new ArrayList<Bitmap>();
 
+        //adding pic
+        addPics.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                dispatchTakePictureIntent();
+            }
+        });
+
+        //saving journey
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -132,9 +140,23 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             FirebaseUser user = firebaseAuth.getCurrentUser();
 
             try{
-                databaseReference.child(user.getUid()).setValue(myJourney);
+                databaseReference.child(user.getUid()) //client id
+                        .child("journeys")             //purpose
+                        .push()                        //unique journey id
+                        .setValue(myJourney);
 
                 Toast.makeText(this, "Journey saved!", Toast.LENGTH_SHORT).show();
+
+                //resetting variables
+                currentPic = null;
+                date = null;
+                editTextStartLat.setText("");
+                editTextEndLat.setText("");
+                editTextStartLong.setText("");
+                editTextEndLong.setText("");
+                pics = null;
+                picsView.setText("");
+                newCalendar = Calendar.getInstance();
             }
             catch(Exception e){
                 Toast.makeText(this, "Error saving the journey!", Toast.LENGTH_SHORT).show();
@@ -150,29 +172,61 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
         createJourney();
     }
 
-    private void startGallery(){
-        try{
-            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(galleryIntent, REQUEST_IMAGE);
-        }
-        catch (Exception e){
-            Toast.makeText(this, "Could not open the gallery", Toast.LENGTH_SHORT).show();
-        }
-    }
+    public void dispatchTakePictureIntent(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //checking that there is an app to take pics
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null){
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(resultCode == Activity.RESULT_OK && data != null && data.getData() != null){
-            String[] filePathColumn = {MediaStore.Images.Media.DATA };
+            File photoFile = null;
 
-            ContentResolver cr = getContentResolver();
-            Cursor cursor = cr.query(data.getData(), /*filePathColumn*/null, null, null, null);
+            try{
+                photoFile = createImageFile();
+            }
+            catch (IOException e)
+            {
+                Toast.makeText(this, "Could not create the file", Toast.LENGTH_SHORT).show();
+            }
 
-            if (null != cursor && cursor.moveToFirst()){
-                String id = cursor.getString(cursor.getColumnIndex())
+            if(photoFile != null){
+                Uri photoUri = null;
+
+                try{
+                    photoUri = FileProvider.getUriForFile(this,
+                            "appdevmodule.peelo.cathal.androidca1",
+                            photoFile);
+                }
+                catch(IllegalArgumentException e){
+                    Toast.makeText(this, "Could not get FileProvider", Toast.LENGTH_SHORT).show();
+                }
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri.toString());
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == REQUEST_IMAGE_CAPTURE){
+            if(resultCode == RESULT_OK){
+                //adding to array and updating view
+                pics.add((Bitmap) data.getExtras().get("data"));//Has to be a Bitmap apparently, not a File
+                picsView.setText("Pics added: " + pics.size());
+            }
+        }
+    }
+
+
+    private File createImageFile() throws IOException {
+        //Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        //get storage directory and name
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        //setting variable
+        currentFilePath = image.getAbsolutePath();
+
+        return image;
+    }
 }
