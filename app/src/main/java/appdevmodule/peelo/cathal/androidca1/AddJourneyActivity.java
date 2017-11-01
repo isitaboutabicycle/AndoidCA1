@@ -44,7 +44,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
     private SimpleDateFormat dateFormatter;
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private File currentPic;
     private ArrayList<Bitmap> pics;
     private Calendar date;
 
@@ -60,7 +59,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             startActivity(new Intent(this, LoginActivity.class));
         }
 
-        //why the italics?
         databaseReference = FirebaseDatabase.getInstance().getReference();
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
 
@@ -72,12 +70,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
         picsView = (TextView) findViewById(R.id.picsView);
         addPics = (Button) findViewById(R.id.addPicsButton);
         addButton = (Button) findViewById(R.id.addButton);
-
-        //TODO: remove these hard-coded values
-        editTextStartLat.setText("2");
-        editTextStartLong.setText("2");
-        editTextEndLat.setText("2");
-        editTextEndLong.setText("2");
 
         textDate.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -148,13 +140,12 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(this, "Journey saved!", Toast.LENGTH_SHORT).show();
 
                 //resetting variables
-                currentPic = null;
                 date = null;
                 editTextStartLat.setText("");
                 editTextEndLat.setText("");
                 editTextStartLong.setText("");
                 editTextEndLong.setText("");
-                pics = null;
+                pics = new ArrayList<Bitmap>();
                 picsView.setText("");
                 newCalendar = Calendar.getInstance();
             }

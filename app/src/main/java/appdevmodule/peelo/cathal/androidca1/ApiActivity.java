@@ -17,6 +17,9 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -46,6 +49,14 @@ public class ApiActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_api);
+
+        //if not logged in, redirect to Login Activity
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (null == user) {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
 
         readout = (ListView) findViewById(R.id.responseView);
         //stationsList = new ArrayList<HashMap<String, String>>();
