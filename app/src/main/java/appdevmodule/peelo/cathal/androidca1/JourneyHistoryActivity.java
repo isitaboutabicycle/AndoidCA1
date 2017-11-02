@@ -94,7 +94,9 @@ public class JourneyHistoryActivity extends AppCompatActivity {
 
                 try {
                     //getting all children of the user's own "journeys" node (hopefully)
-                    ref.child(user.getUid()).child("journeys").orderByChild("date")
+                    ref.child(user.getUid())
+                            .child("journeys")
+                            .orderByChild("date")
                             .addListenerForSingleValueEvent(
                                     new ValueEventListener() {
                                 @Override
