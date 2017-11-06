@@ -17,7 +17,7 @@ public final class Journey {
     private int StartLong;
     private int EndLat;
     private int EndLong;
-    private Calendar Date;
+    private String Date;
     private ArrayList<String> Pics;
 
     public Journey(){
@@ -25,11 +25,21 @@ public final class Journey {
         StartLong = 0;
         EndLat = 0;
         EndLong = 0;
-        Date = Calendar.getInstance();
+        Date = "";
         Pics = new ArrayList<String>();
     }
 
-    public Journey(int startLat, int startLong, int endLat, int endLong, Calendar date, ArrayList<Bitmap> pics) {
+    public Journey(ArrayList<String> pics, int startLat, int startLong, int endLat, int endLong, String date) {
+        StartLat = startLat;
+        StartLong = startLong;
+        EndLat = endLat;
+        EndLong = endLong;
+        Date = date;
+        Pics = pics;
+    }
+
+
+    public Journey(int startLat, int startLong, int endLat, int endLong, String date, ArrayList<Bitmap> pics) {
         StartLat = startLat;
         StartLong = startLong;
         EndLat = endLat;
@@ -68,7 +78,7 @@ public final class Journey {
         return EndLong;
     }
 
-    public Calendar getDate(){
+    public String getDate(){
         return Date;
     }
 

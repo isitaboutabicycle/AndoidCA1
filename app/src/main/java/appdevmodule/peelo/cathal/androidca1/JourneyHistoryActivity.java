@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +38,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -44,9 +46,12 @@ public class JourneyHistoryActivity extends AppCompatActivity {
 
     private int feedCode = 1;
     private ListView readout = null;
-    private FirebaseUser user = null;
-    private DatabaseReference ref;
     private SimpleDateFormat dateFormatter;
+
+    private FirebaseUser user = null;
+    private FirebaseDatabase database;
+    private DatabaseReference ref;
+    private ChildEventListener cel;
 
     private ArrayList<Journey> journeyObjs;
     private ArrayList<String> journeysList;
@@ -58,9 +63,7 @@ public class JourneyHistoryActivity extends AppCompatActivity {
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
-        //TODO: remove these two lines
         journeyObjs = new ArrayList<Journey>();
-        journeyObjs.add(new Journey());
 
         //if not logged in, redirect to Login Activity
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -73,10 +76,52 @@ public class JourneyHistoryActivity extends AppCompatActivity {
         readout = (ListView) findViewById(R.id.responseView);
 
         journeysList = new ArrayList<String>();
-        ref = FirebaseDatabase.getInstance().getReference();
+        //finding the user's own "journeys" node
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference()
+                .child(user.getUid())
+                .child("journeys");
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
 
         Button refreshBtn = (Button) findViewById(R.id.queryButton);
+
+        cel = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                try{
+                    int mStartLat = (int)(long) dataSnapshot.child("startLat").getValue();
+                    int mStartLong = (int)(long) dataSnapshot.child("startLong").getValue();
+                    int mEndLat = (int)(long) dataSnapshot.child("endLat").getValue();
+                    int mEndLong = (int)(long) dataSnapshot.child("endLong").getValue();
+                    String mDate = dataSnapshot.child("date").getValue(String.class);
+                    ArrayList<String> mPics = (ArrayList<String>) dataSnapshot.child("pics").getValue();
+
+                    Journey journey = new Journey(mPics, mStartLat, mStartLong, mEndLat, mEndLong, mDate);
+                    //Journey journey = dataSnapshot.getValue(Journey.class); Doesn't work for some reason
+                    
+                    journeyObjs.add(journey);
+                }catch(Exception e){
+                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(JourneyHistoryActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        ref.addChildEventListener(cel);
+
         refreshBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -93,8 +138,9 @@ public class JourneyHistoryActivity extends AppCompatActivity {
                 //
 
                 try {
-                    //getting all children of the user's own "journeys" node (hopefully)
-                    ref.child(user.getUid())
+
+
+                    /*ref.child(user.getUid())
                             .child("journeys")
                             .orderByChild("date")
                             .addListenerForSingleValueEvent(
@@ -112,9 +158,11 @@ public class JourneyHistoryActivity extends AppCompatActivity {
                                     Log.e("ERROR", e.getMessage(), new Exception());
                                     Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
                                 }
-                            });
+                            });*/
+
 
                     try {
+                        journeysList = new ArrayList<String>();
 
                         int size = journeyObjs.size();
                         //iterating over the objects
@@ -123,9 +171,9 @@ public class JourneyHistoryActivity extends AppCompatActivity {
                             Journey j = journeyObjs.get(i);
 
                             String parsedResponse =
-                                    "Date:\t\t\t\t\t\t\t\t" + dateFormatter.format(j.getDate().getTime()) +
-                                            "\nStart Coordinates:\t\t" + "("+j.getStartLat()+" , "+j.getStartLong()+")" +
-                                            "\nEnd Coordinates:\t\t" + "("+j.getEndLat()+" , "+j.getEndLong()+")" +
+                                    "Date:\t\t\t\t\t\t\t\t" + j.getDate() +
+                                            "\nStart coordinates:\t\t" + "("+j.getStartLat()+" , "+j.getStartLong()+")" +
+                                            "\nEnd coordinates:\t\t\t" + "("+j.getEndLat()+" , "+j.getEndLong()+")" +
                                             "\nPictures attached:\t\t" + j.getPics().size();
 
                             //saving node details

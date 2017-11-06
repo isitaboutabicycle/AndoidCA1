@@ -46,6 +46,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
 
     private ArrayList<Bitmap> pics;
     private Calendar date;
+    private String dateString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +79,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        //getting current date...?
-        newCalendar = Calendar.getInstance();
-
         //listener and method to feed into datePickerDialog
         DatePickerDialog.OnDateSetListener myODSListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -89,9 +87,13 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                 //updating data member
                 date.set(year, month, dayOfMonth);
                 //updating dislay
-                textDate.setText(dateFormatter.format(date.getTime()));
+                dateString = dateFormatter.format(date.getTime());
+                textDate.setText(dateString);
             }
         };
+
+        //getting current date...?
+        newCalendar = Calendar.getInstance();
 
         //feeding it in...
         datePickerDialog = new DatePickerDialog(this, myODSListener, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH),
@@ -127,7 +129,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             endLat = Integer.parseInt(editTextEndLat.getText().toString().trim());
             endLong = Integer.parseInt(editTextEndLong.getText().toString().trim());
 
-            Journey myJourney = new Journey(startLat, startLong, endLat, endLong, date, pics);
+            Journey myJourney = new Journey(startLat, startLong, endLat, endLong, dateString, pics);
 
             FirebaseUser user = firebaseAuth.getCurrentUser();
 
@@ -137,14 +139,16 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                         .push()                        //unique journey id
                         .setValue(myJourney);
 
-                Toast.makeText(this, "Journey saved!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Journey saved!", Toast.LENGTH_LONG).show();
 
                 //resetting variables
                 date = null;
+                dateString = "";
                 editTextStartLat.setText("");
                 editTextEndLat.setText("");
                 editTextStartLong.setText("");
                 editTextEndLong.setText("");
+                textDate.setText("");
                 pics = new ArrayList<Bitmap>();
                 picsView.setText("");
                 newCalendar = Calendar.getInstance();
