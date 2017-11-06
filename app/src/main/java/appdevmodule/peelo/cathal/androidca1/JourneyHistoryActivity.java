@@ -98,7 +98,7 @@ public class JourneyHistoryActivity extends AppCompatActivity {
 
                     Journey journey = new Journey(mPics, mStartLat, mStartLong, mEndLat, mEndLong, mDate);
                     //Journey journey = dataSnapshot.getValue(Journey.class); Doesn't work for some reason
-                    
+
                     journeyObjs.add(journey);
                 }catch(Exception e){
                     Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
@@ -116,7 +116,7 @@ public class JourneyHistoryActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(JourneyHistoryActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(JourneyHistoryActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
 
@@ -182,12 +182,12 @@ public class JourneyHistoryActivity extends AppCompatActivity {
                     }
                     catch (Exception e){
                         Log.e("ERROR", e.getMessage(), e);
-                        Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                        Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
                     }
                 }
                 catch(Exception e) {
                     Log.e("ERROR", e.getMessage(), e);
-                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
                 }
 
                 //

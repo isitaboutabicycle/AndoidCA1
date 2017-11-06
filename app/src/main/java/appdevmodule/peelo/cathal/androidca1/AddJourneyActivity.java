@@ -86,7 +86,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                 date = Calendar.getInstance();
                 //updating data member
                 date.set(year, month, dayOfMonth);
-                //updating dislay
+                //updating display
                 dateString = dateFormatter.format(date.getTime());
                 textDate.setText(dateString);
             }
@@ -154,11 +154,11 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                 newCalendar = Calendar.getInstance();
             }
             catch(Exception e){
-                Toast.makeText(this, "Error saving the journey!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error saving the journey!", Toast.LENGTH_LONG).show();
             }
         }
         catch (Exception e){
-            Toast.makeText(this, "Latitude or longitude invalid", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Latitude or longitude invalid", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -179,7 +179,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             }
             catch (IOException e)
             {
-                Toast.makeText(this, "Could not create the file", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Could not create the file", Toast.LENGTH_LONG).show();
             }
 
             if(photoFile != null){
@@ -191,7 +191,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                             photoFile);
                 }
                 catch(IllegalArgumentException e){
-                    Toast.makeText(this, "Could not get FileProvider", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Could not get FileProvider", Toast.LENGTH_LONG).show();
                 }
 
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri.toString());
