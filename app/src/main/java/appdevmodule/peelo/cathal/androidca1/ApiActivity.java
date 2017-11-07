@@ -54,6 +54,7 @@ public class ApiActivity extends AppCompatActivity {
     ArrayList<String> stationsList;
     ArrayAdapter adapter;
     JSONArray stations;
+    RetrieveFeedTask goldenRetriever;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,15 +103,18 @@ public class ApiActivity extends AppCompatActivity {
         //stationsList = new ArrayList<HashMap<String, String>>();
         stationsList = new ArrayList<String>();
 
+        //show stations on ListView
+        goldenRetriever = new RetrieveFeedTask();
+        goldenRetriever.execute();
+
         Button doTheThing = (Button) findViewById(R.id.queryButton);
 
         doTheThing.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
-                RetrieveFeedTask goldenRetriever = new RetrieveFeedTask();
-
+                //refresh ListView
+                goldenRetriever = new RetrieveFeedTask();
                 goldenRetriever.execute();
             }
         });
@@ -188,7 +192,6 @@ public class ApiActivity extends AppCompatActivity {
                             station.put("standsFree", availableStands);
 
                             //saving station
-                            //stationsList.add(station);
                             stationsList.add(parsedResponse);
                         }
                     }

@@ -55,15 +55,12 @@ public class JourneyHistoryActivity extends AppCompatActivity {
 
     private ArrayList<Journey> journeyObjs;
     private ArrayList<String> journeysList;
+    private refreshList async;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_journey_history);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-
-        journeyObjs = new ArrayList<Journey>();
 
         //if not logged in, redirect to Login Activity
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -83,7 +80,48 @@ public class JourneyHistoryActivity extends AppCompatActivity {
                 .child("journeys");
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
 
+        //showing initial list
+        /*setCel();
+        //adding a delay to avoid setting the list to the View before it is filled
+        try{
+            Thread.sleep(4000);
+        }
+        catch (Exception e){
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        refreshList();*/
+        async = new refreshList();
+        async.execute();
+
         Button refreshBtn = (Button) findViewById(R.id.queryButton);
+
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                /*setCel();
+                //adding a delay to avoid setting the list to the View before it is filled
+                try{
+                    Thread.sleep(4000);
+                }
+                catch (Exception e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                refreshList();*/
+                async = new refreshList();
+                async.execute();
+            }
+        });
+    }
+
+
+    /*private void setCel(){
+        //resetting list to avoid duplication
+        journeyObjs = new ArrayList<Journey>();
+
+        //hidden again in refreshList()
+        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
 
         cel = new ChildEventListener() {
             @Override
@@ -97,11 +135,14 @@ public class JourneyHistoryActivity extends AppCompatActivity {
                     ArrayList<String> mPics = (ArrayList<String>) dataSnapshot.child("pics").getValue();
 
                     Journey journey = new Journey(mPics, mStartLat, mStartLong, mEndLat, mEndLong, mDate);
-                    //Journey journey = dataSnapshot.getValue(Journey.class); Doesn't work for some reason
 
-                    journeyObjs.add(journey);
+                    //only add if it is not already in there
+                    if(!journeyObjs.contains(journey)){
+                        journeyObjs.add(journey);
+                    }
+
                 }catch(Exception e){
-                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
+                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -120,181 +161,139 @@ public class JourneyHistoryActivity extends AppCompatActivity {
             }
         };
 
+        //attaching listener to Firebase database
         ref.addChildEventListener(cel);
-
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //JourneyHistoryActivity.RetrieveJourneysTask retrieveFirebase = new JourneyHistoryActivity.RetrieveJourneysTask();
-                //retrieveFirebase.execute();
-
-
-
-                //start
-
-                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-
-                //
-
-                try {
-
-
-                    /*ref.child(user.getUid())
-                            .child("journeys")
-                            .orderByChild("date")
-                            .addListenerForSingleValueEvent(
-                                    new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    //iterating over the child nodes and adding them to the static ArrayList
-                                    for(DataSnapshot dss : dataSnapshot.getChildren()){
-                                        journeyObjs.add(dss.getValue(Journey.class));
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError e) {
-                                    Log.e("ERROR", e.getMessage(), new Exception());
-                                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
-                                }
-                            });*/
-
-
-                    try {
-                        journeysList = new ArrayList<String>();
-
-                        int size = journeyObjs.size();
-                        //iterating over the objects
-                        for(int i = 0; i < size; i++) {
-
-                            Journey j = journeyObjs.get(i);
-
-                            String parsedResponse =
-                                    "Date:\t\t\t\t\t\t\t\t" + j.getDate() +
-                                            "\nStart coordinates:\t\t" + "("+j.getStartLat()+" , "+j.getStartLong()+")" +
-                                            "\nEnd coordinates:\t\t\t" + "("+j.getEndLat()+" , "+j.getEndLong()+")" +
-                                            "\nPictures attached:\t\t" + j.getPics().size();
-
-                            //saving node details
-                            journeysList.add(parsedResponse);
-                        }
-                    }
-                    catch (Exception e){
-                        Log.e("ERROR", e.getMessage(), e);
-                        Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
-                    }
-                }
-                catch(Exception e) {
-                    Log.e("ERROR", e.getMessage(), e);
-                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
-                }
-
-                //
-
-                //if(response == null)
-                //{ journeysList.add("Could not extract data from Firebase"); }
-
-                findViewById(R.id.progressBar).setVisibility(View.GONE);
-
-                try{
-                    ArrayAdapter adapter = new ArrayAdapter<String>(JourneyHistoryActivity.this, R.layout.station_list_view,
-                            journeysList
-                    );
-
-                    readout.setAdapter(adapter);
-                }
-                catch(Exception e){
-                    Log.i("INFO", e.getMessage());
-                }
-
-                //end
-
-
-
-            }
-        });
     }
-/*
-    class RetrieveJourneysTask extends AsyncTask<Void, Void, String> {
 
+    private void refreshList(){
+
+        try {
+            try {
+                journeysList = new ArrayList<String>();
+                int size = journeyObjs.size();
+
+                //iterating over the objects
+                for(int i = 0; i < size; i++) {
+
+                    Journey j = journeyObjs.get(i);
+
+                    String parsedResponse =
+                            "Date:\t\t\t\t\t\t\t\t" + j.getDate() +
+                                    "\nStart coordinates:\t\t" + "("+j.getStartLat()+" , "+j.getStartLong()+")" +
+                                    "\nEnd coordinates:\t\t\t" + "("+j.getEndLat()+" , "+j.getEndLong()+")" +
+                                    "\nPictures attached:\t\t" + j.getPics().size();
+
+                    //saving node details
+                    journeysList.add(parsedResponse);
+                }
+            }
+            catch (Exception e){
+                Log.e("ERROR", e.getMessage(), e);
+                Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
+            }
+        }
+        catch(Exception e) {
+            Log.e("ERROR", e.getMessage(), e);
+            Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
+        }
+
+        //made visible in setCel()
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
+
+        try{
+            ArrayAdapter adapter = new ArrayAdapter<String>(JourneyHistoryActivity.this, R.layout.station_list_view,
+                    journeysList
+            );
+
+            readout.setAdapter(adapter);
+        }
+        catch(Exception e){
+            Log.i("INFO", e.getMessage());
+        }
+    }*/
+
+    class refreshList extends AsyncTask<Void, Void, String>{
+
+        @Override
         protected void onPreExecute() {
             super.onPreExecute();
             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+
+            //resetting list to avoid duplication
+            //journeyObjs = new ArrayList<Journey>();
+            journeysList = new ArrayList<String>();
         }
 
-        protected String doInBackground(Void... urls) {
+        @Override
+        protected String doInBackground(Void... params) {
 
-            try {
-                //getting all children of the user's own "journeys" node (hopefully)
-                ref.child(user.getUid()).child("journeys").orderByChild("date")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //iterating over the child nodes and adding them to the static ArrayList
-                        for(DataSnapshot dss : dataSnapshot.getChildren()){
-                            journeyObjs.add(dss.getValue(Journey.class));
+            cel = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    try{
+                        int mStartLat = (int)(long) dataSnapshot.child("startLat").getValue();
+                        int mStartLong = (int)(long) dataSnapshot.child("startLong").getValue();
+                        int mEndLat = (int)(long) dataSnapshot.child("endLat").getValue();
+                        int mEndLong = (int)(long) dataSnapshot.child("endLong").getValue();
+                        String mDate = dataSnapshot.child("date").getValue(String.class);
+                        ArrayList<String> mPics = (ArrayList<String>) dataSnapshot.child("pics").getValue();
+                        int picsNo;
+
+                        try{
+                            picsNo = mPics.size();
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError e) {
-                        Log.e("ERROR", e.getMessage(), new Exception());
-                        Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
-                    }
-                });
-
-                try {
-
-                    int size = journeyObjs.size();
-                    //iterating over the objects
-                    for(int i = 0; i < size; i++) {
-
-                        Journey j = journeyObjs.get(i);
+                        catch (NullPointerException e){
+                            picsNo = 0;
+                        }
 
                         String parsedResponse =
-                                              "Start Coordinates:\t" + j.getStartLat()+","+j.getStartLong() +
-                                            "\nEnd Coordinates:\t" + j.getEndLat()+","+j.getEndLong() +
-                                            "\nDate:\t\t\t" + j.getDate().toString() +
-                                            "\nPictures attached:\t" + j.getPics().size();
+                                "Date:\t\t\t\t\t\t\t\t" + mDate +
+                                        "\nStart coordinates:\t\t" + "("+mStartLat+" , "+mStartLong+")" +
+                                        "\nEnd coordinates:\t\t\t" + "("+mEndLat+" , "+mEndLong+")" +
+                                        "\nPictures attached:\t\t" + picsNo;
 
                         //saving node details
                         journeysList.add(parsedResponse);
+
+                        ArrayAdapter adapter = new ArrayAdapter<String>(JourneyHistoryActivity.this, R.layout.station_list_view,
+                                journeysList
+                        );
+
+                        readout.setAdapter(adapter);
+
+                    }catch(Exception e){
+                        Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
-                catch (Exception e){
-                    Log.e("ERROR", e.getMessage(), e);
-                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
-                    return e.getMessage();
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(JourneyHistoryActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
-            }
-            catch(Exception e) {
-                Log.e("ERROR", e.getMessage(), e);
-                Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
-                return e.getMessage();
-            }
+            };
+
+            //attaching listener to Firebase database
+            ref.addChildEventListener(cel);
 
             return null;
         }
 
-        protected void onPostExecute(String response) {
+        @Override
+        protected void onPostExecute(String response){
             super.onPostExecute(response);
 
-            if(response == null)
-            { journeysList.add("Could not extract data from Firebase"); }
-
+            //made visible in onPreExecute()
             findViewById(R.id.progressBar).setVisibility(View.GONE);
-
-            try{
-                ArrayAdapter adapter = new ArrayAdapter<String>(JourneyHistoryActivity.this, R.layout.station_list_view,
-                        journeysList
-                );
-
-                readout.setAdapter(adapter);
-            }
-            catch(Exception e){
-                Log.i("INFO", e.getMessage());
-            }
         }
-    }*/
+    }
+
 }
