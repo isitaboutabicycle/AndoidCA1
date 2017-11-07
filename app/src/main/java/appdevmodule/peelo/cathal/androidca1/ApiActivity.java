@@ -3,6 +3,7 @@ package appdevmodule.peelo.cathal.androidca1;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -73,30 +74,28 @@ public class ApiActivity extends AppCompatActivity {
         readout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                JSONObject obj = new JSONObject();
-                JSONObject posobj = new JSONObject();
-                String coords = "No coordinates";
+                JSONObject obj;
+                JSONObject posobj;
+                String lat = "";
+                String lng = "";
+                String name = "";
 
                 try{
                     obj = stations.getJSONObject(position);
-                }
-                catch (JSONException e){
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
-                }
-                try{
                     posobj = obj.getJSONObject("position");
+                    lat = posobj.getString("lat");
+                    lng = posobj.getString("lng");
+                    name = obj.getString("address") + " Bike Station";
                 }
                 catch(JSONException e){
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
-                }
-                try{
-                    coords = posobj.getString("lat") + posobj.getString("lng");
-                }
-                catch(JSONException e){
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
-                Toast.makeText(getApplicationContext(), coords, Toast.LENGTH_LONG).show();
+                Uri myUri = Uri.parse("geo:"+lat+","+lng+"?q="+lat+","+lng+"("+name+")");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, myUri);
+                startActivity(mapIntent);
+
+                //Toast.makeText(getApplicationContext(), lat+lng, Toast.LENGTH_LONG).show();
             }
         });
 
