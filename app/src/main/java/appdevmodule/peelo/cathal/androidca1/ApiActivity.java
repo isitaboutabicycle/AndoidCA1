@@ -1,26 +1,35 @@
 package appdevmodule.peelo.cathal.androidca1;
 
+import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filterable;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
@@ -32,6 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static appdevmodule.peelo.cathal.androidca1.R.id.progressBar;
 import static appdevmodule.peelo.cathal.androidca1.R.id.queryButton;
@@ -39,11 +49,10 @@ import static appdevmodule.peelo.cathal.androidca1.R.id.responseView;
 
 public class ApiActivity extends AppCompatActivity {
 
-    int feedCode = 1;
     ListView readout = null;
-    //a list of HashMaps to store data from the JSON in
-    //ArrayList<HashMap<String, String>> stationsList;
     ArrayList<String> stationsList;
+    ArrayAdapter adapter;
+    JSONArray stations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +68,40 @@ public class ApiActivity extends AppCompatActivity {
         }
 
         readout = (ListView) findViewById(R.id.responseView);
+
+        //making the readout clickable
+        readout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                JSONObject obj = new JSONObject();
+                JSONObject posobj = new JSONObject();
+                String coords = "No coordinates";
+
+                try{
+                    obj = stations.getJSONObject(position);
+                }
+                catch (JSONException e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+                }
+                try{
+                    posobj = obj.getJSONObject("position");
+                }
+                catch(JSONException e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+                }
+                try{
+                    coords = posobj.getString("lat") + posobj.getString("lng");
+                }
+                catch(JSONException e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG);
+                }
+
+                Toast.makeText(getApplicationContext(), coords, Toast.LENGTH_LONG).show();
+            }
+        });
+
         //stationsList = new ArrayList<HashMap<String, String>>();
         stationsList = new ArrayList<String>();
-
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         Button doTheThing = (Button) findViewById(R.id.queryButton);
 
@@ -91,6 +129,7 @@ public class ApiActivity extends AppCompatActivity {
         protected String doInBackground(Void... urls) {
 
             String response = null;
+            stationsList = new ArrayList<String>();
 
             try {
                 URL url = new URL("https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fcd108bd549949a9d7ee003a683cdece0fea1ff2");
@@ -118,7 +157,7 @@ public class ApiActivity extends AppCompatActivity {
 
                         //JSONObject jsonObject = new JSONObject(response);
 
-                        JSONArray stations = new JSONArray(response);
+                        stations = new JSONArray(response);
 
                         for(int i = 0; i < stations.length(); i++) {
 
@@ -178,7 +217,7 @@ public class ApiActivity extends AppCompatActivity {
             Log.i("INFO", response);
 
             try{
-                ArrayAdapter adapter = new ArrayAdapter<String>(ApiActivity.this, R.layout.station_list_view,
+                adapter = new ArrayAdapter<String>(ApiActivity.this, R.layout.station_list_view,
                         stationsList
                         //        new String[]{"address", "status", "bikesFree", "standsFree"}
                         //        new String[]{R.id.address, R.id.status, R.id.bikesFree, R.id.standsFree}
