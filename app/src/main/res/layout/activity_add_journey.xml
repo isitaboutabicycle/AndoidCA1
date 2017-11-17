@@ -12,59 +12,175 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <EditText
-            android:id="@+id/editTextStartLat"
+        <!--LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter start latitude" />
-        <EditText
-            android:id="@+id/editTextStartLong"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter start longitude" />
-        <EditText
-            android:id="@+id/editTextEndLat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter end latitude" />
-        <EditText
-            android:id="@+id/editTextEndLong"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter end longitude" />
-        <TextView
-            android:id="@+id/textDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:padding="4dp"
-            android:hint="Enter date" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:background="#000000"/>
-        <TextView
-            android:id="@+id/picsView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:padding="4dp"
-            android:hint="" />
-        <Button
-            android:id="@+id/addPicsButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Add Pics" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_weight="1">
+                <EditText
+                    android:id="@+id/editTextStartLat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center|bottom"
+                    android:hint="Start latitude" />
+                <EditText
+                    android:id="@+id/editTextStartLong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center|bottom"
+                    android:hint="Start longitude" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/addButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Confirm Journey Details"
-            android:layout_gravity="center"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="top"
+                android:orientation="horizontal"
+                android:padding="0dp"
+                android:layout_margin="0dp">
+                <Button
+                    android:id="@+id/getStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Use geoloc"
+                    android:layout_gravity="top|center_horizontal"
+                    android:padding="0dp"
+                    android:layout_margin="0dp"/>
+                <Button
+                    android:id="@+id/viewStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="View in Maps"
+                    android:layout_gravity="top|center_horizontal"
+                    android:padding="0dp"
+                    android:layout_margin="0dp"/>
+            </LinearLayout>
+        <!--LinearLayout-->
+
+        <!--LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/editTextEndLat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center|bottom"
+                    android:hint="End latitude" />
+                <EditText
+                    android:id="@+id/editTextEndLong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center|bottom"
+                    android:hint="End longitude" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="top"
+                android:orientation="horizontal"
+                android:padding="0dp"
+                android:layout_margin="0dp">
+                <Button
+                    android:id="@+id/getEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Use geoloc"
+                    android:layout_gravity="top|center_horizontal"
+                    android:padding="0dp"
+                    android:layout_margin="0dp"/>
+                <Button
+                    android:id="@+id/viewEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="View in Maps"
+                    android:layout_gravity="top|center_horizontal"
+                    android:padding="0dp"
+                    android:layout_margin="0dp"/>
+            </LinearLayout>
+        <!--/LinearLayout-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/textDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:textSize="18dp"
+                android:padding="4dp"
+                android:hint="Tap to enter a date" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:background="#000000"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/picsView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="18dp"
+                android:padding="4dp"
+                android:hint="" />
+            <Button
+                android:id="@+id/addPicsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:text="Add Pics" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <Button
+                android:id="@+id/addButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:text="Confirm Journey Details"
+                android:layout_gravity="center_horizontal|center_vertical"/>
+        </LinearLayout>
 
     </LinearLayout>
 

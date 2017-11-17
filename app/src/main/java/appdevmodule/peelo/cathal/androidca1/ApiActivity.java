@@ -1,29 +1,22 @@
 package appdevmodule.peelo.cathal.androidca1;
 
-import android.app.ListActivity;
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Filterable;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +25,6 @@ import com.google.firebase.auth.FirebaseUser;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -42,19 +34,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import static appdevmodule.peelo.cathal.androidca1.R.id.progressBar;
-import static appdevmodule.peelo.cathal.androidca1.R.id.queryButton;
-import static appdevmodule.peelo.cathal.androidca1.R.id.responseView;
 
 public class ApiActivity extends AppCompatActivity {
 
-    ListView readout = null;
-    ArrayList<String> stationsList;
-    ArrayAdapter adapter;
-    JSONArray stations;
-    RetrieveFeedTask goldenRetriever;
+    private ListView readout = null;
+    private ArrayList<String> stationsList;
+    private ArrayAdapter adapter;
+    private JSONArray stations;
+    private RetrieveFeedTask goldenRetriever;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +109,7 @@ public class ApiActivity extends AppCompatActivity {
 
 
 
-    class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
+    private class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
 
         protected void onPreExecute() {
             super.onPreExecute();
@@ -231,9 +218,6 @@ public class ApiActivity extends AppCompatActivity {
             {
                 Log.i("INFO", e.getMessage());
             }
-
-            //Setting the TextView to the response string
-            //setReadout(response);
         }
     }
 }

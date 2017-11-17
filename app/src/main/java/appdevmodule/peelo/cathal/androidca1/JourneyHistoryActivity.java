@@ -217,7 +217,7 @@ public class JourneyHistoryActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+            findViewById(R.id.historyProgressBar).setVisibility(View.VISIBLE);
 
             //resetting list to avoid duplication
             //journeyObjs = new ArrayList<Journey>();
@@ -292,7 +292,7 @@ public class JourneyHistoryActivity extends AppCompatActivity {
             super.onPostExecute(response);
 
             //made visible in onPreExecute()
-            findViewById(R.id.progressBar).setVisibility(View.GONE);
+            findViewById(R.id.historyProgressBar).setVisibility(View.GONE);
         }
     }
 

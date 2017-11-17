@@ -1,11 +1,17 @@
 package appdevmodule.peelo.cathal.androidca1;
 
+import android.*;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +22,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +46,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
 
     private EditText editTextStartLat, editTextStartLong, editTextEndLat, editTextEndLong;
     private TextView textDate, picsView;
-    private Button addPics, addButton;
+    private Button getStart, viewStart, getEnd, viewEnd, addPics, addButton;
 
     private Calendar newCalendar;
     private DatePickerDialog datePickerDialog;
@@ -47,6 +56,13 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
     private ArrayList<Bitmap> pics;
     private Calendar date;
     private String dateString;
+    private GoogleApiClient mGoogleApiClient;
+
+    private FusedLocationProviderClient mFusedLocationClient;
+    private final int LOCATION_PERMISSION_REQUEST = 1;
+    private Boolean myLocationPermission;
+    private Location myLocation;
+    private Boolean first;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +78,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         editTextStartLat = (EditText) findViewById(R.id.editTextStartLat);
         editTextStartLong = (EditText) findViewById(R.id.editTextStartLong);
@@ -69,9 +86,37 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
         editTextEndLong = (EditText) findViewById(R.id.editTextEndLong);
         textDate = (TextView) findViewById(R.id.textDate);
         picsView = (TextView) findViewById(R.id.picsView);
+        getStart = (Button) findViewById(R.id.getStart);
+        viewStart = (Button) findViewById(R.id.viewStart);
+        getEnd = (Button) findViewById(R.id.getEnd);
+        viewEnd = (Button) findViewById(R.id.viewEnd);
         addPics = (Button) findViewById(R.id.addPicsButton);
         addButton = (Button) findViewById(R.id.addButton);
 
+        getStart.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                getPoint(true);
+            }
+        });
+        viewStart.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                viewPoint(true);
+            }
+        });
+        getEnd.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                getPoint(false);
+            }
+        });
+        viewEnd.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                viewPoint(false);
+            }
+        });
         textDate.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -108,6 +153,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                 dispatchTakePictureIntent();
             }
         });
+
 
         //saving journey
         addButton.setOnClickListener(new View.OnClickListener(){
@@ -223,5 +269,72 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
         currentFilePath = image.getAbsolutePath();
 
         return image;
+    }
+
+    private void getLocationPermission(){
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED){
+            myLocationPermission = true;
+        }
+        else{
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST);
+        }
+    }
+
+    private void onRequestPermissionResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults){
+        myLocationPermission = false;
+        switch(requestCode){
+            case LOCATION_PERMISSION_REQUEST: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    myLocationPermission = true;
+                }
+            }
+        }
+        //updateLocationUI();
+    }
+
+    //to fetch latest coordinates from FusedLocationProviderClient and fill them into the EditTexts
+    private void getPoint(boolean mFirst){
+        first = mFirst;
+
+
+
+        first = null;
+    }
+
+    //to parse entered coordinates and pass them to Maps
+    private void viewPoint(boolean mFirst){
+        String name, lat, lng;
+        int intLat, intLng;
+
+        if(mFirst){
+            name = "Journey's Start";
+            lat = editTextStartLat.getText().toString().trim();
+            lng = editTextStartLong.getText().toString().trim();
+        } else {
+            name = "Journey's End";
+            lat = editTextEndLat.getText().toString().trim();
+            lng = editTextEndLong.getText().toString().trim();
+        }
+        intLat = Integer.parseInt(lat);
+        intLng = Integer.parseInt(lng);
+
+        //sanitising coordinates
+        if(lat==null || intLat > 90 || intLat < -90){
+            lat = "0";
+        }
+        if(lng==null || intLng > 90 || intLng < -90){
+            lng = "0";
+        }
+
+        Uri myUri = Uri.parse("geo:"+lat+","+lng+"?q="+lat+","+lng+"("+name+")");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, myUri);
+        startActivity(mapIntent);
+
+        first = null;
     }
 }
