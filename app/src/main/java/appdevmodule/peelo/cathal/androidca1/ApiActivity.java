@@ -82,8 +82,6 @@ public class ApiActivity extends AppCompatActivity {
                 Uri myUri = Uri.parse("geo:"+lat+","+lng+"?q="+lat+","+lng+"("+name+")");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, myUri);
                 startActivity(mapIntent);
-
-                //Toast.makeText(getApplicationContext(), lat+lng, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -136,7 +134,7 @@ public class ApiActivity extends AppCompatActivity {
                     //parsing the response to a string
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);//.append("\n");
+                        stringBuilder.append(line);
                         Log.i("INFO", line);
                     }
                     bufferedReader.close();
@@ -145,38 +143,21 @@ public class ApiActivity extends AppCompatActivity {
                     //parsing the string to objects
                     if (response != null){
 
-                        //JSONObject jsonObject = new JSONObject(response);
-
                         stations = new JSONArray(response);
 
                         for(int i = 0; i < stations.length(); i++) {
 
                             JSONObject obj = stations.getJSONObject(i);
-                            JSONObject posobj = obj.getJSONObject("position");
 
                             //getting value strings from the obj
                             String address = obj.getString("address");
-                            String lat = posobj.getString("lat");
-                            String lng = posobj.getString("lng");
                             String availableBikes = obj.getString("available_bikes");
                             String availableStands = obj.getString("available_bike_stands");
 
-                            //creating a key/value hashmap for the station
-                            HashMap<String, String> station = new HashMap<String, String>();
-
                             String parsedResponse =
                                       "Station:\t\t\t\t" + address +
-                                    "\nLatitude:\t\t\t" + lat +
-                                    "\nLongitude:\t\t" + lng +
                                     "\nFree Bikes:\t\t" + availableBikes +
                                     "\nFree Stands:\t\t" + availableStands;
-
-                            //adding each keyvalue pair to the HashMap
-                            station.put("address", address);
-                            station.put("latitude", lat);
-                            station.put("longitude", lng);
-                            station.put("bikesFree", availableBikes);
-                            station.put("standsFree", availableStands);
 
                             //saving station
                             stationsList.add(parsedResponse);
@@ -189,7 +170,7 @@ public class ApiActivity extends AppCompatActivity {
             }
             catch(Exception e) {
                 Log.e("ERROR", e.getMessage(), e);
-                return e.getMessage();//changed from null
+                return e.getMessage();
             }
 
             return response;

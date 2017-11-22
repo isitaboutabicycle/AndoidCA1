@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -56,7 +57,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
     private ArrayList<Bitmap> pics;
     private Calendar date;
     private String dateString;
-    private GoogleApiClient mGoogleApiClient;
+    //private GoogleApiClient mGoogleApiClient;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private final int LOCATION_PERMISSION_REQUEST = 1;
@@ -78,7 +79,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         editTextStartLat = (EditText) findViewById(R.id.editTextStartLat);
         editTextStartLong = (EditText) findViewById(R.id.editTextStartLong);
@@ -154,7 +154,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-
         //saving journey
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -162,6 +161,8 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                 createJourney();
             }
         });
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
 
@@ -272,6 +273,7 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void getLocationPermission(){
+        myLocationPermission = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED){
             myLocationPermission = true;
@@ -294,22 +296,52 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         }
-        //updateLocationUI();
     }
 
     //to fetch latest coordinates from FusedLocationProviderClient and fill them into the EditTexts
     private void getPoint(boolean mFirst){
         first = mFirst;
+        //getLocationPermission();
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED){
+            myLocationPermission = true;
+        }
+
+        if(!myLocationPermission){
+            Toast.makeText(AddJourneyActivity.this, "This feature requires permission to access your location", Toast.LENGTH_SHORT).show();
+        }
+        else{
 
 
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                myLocation = location;
+                                if (first){
+                                    editTextStartLat.setText(String.valueOf(myLocation.getLatitude()));
+                                    editTextStartLong.setText(String.valueOf(myLocation.getLongitude()));
+                                }
+                                else {
+                                    editTextEndLat.setText(String.valueOf(myLocation.getLatitude()));
+                                    editTextEndLong.setText(String.valueOf(myLocation.getLongitude()));
+                                }
+                            }
+                            else{
+                                Toast.makeText(AddJourneyActivity.this, "No location available right now", Toast.LENGTH_SHORT).show();
 
-        first = null;
+                            }
+                        }
+                    });
+        }
     }
 
     //to parse entered coordinates and pass them to Maps
     private void viewPoint(boolean mFirst){
         String name, lat, lng;
-        int intLat, intLng;
+        double numLat, numLng;
 
         if(mFirst){
             name = "Journey's Start";
@@ -320,21 +352,23 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             lat = editTextEndLat.getText().toString().trim();
             lng = editTextEndLong.getText().toString().trim();
         }
-        intLat = Integer.parseInt(lat);
-        intLng = Integer.parseInt(lng);
 
-        //sanitising coordinates
-        if(lat==null || intLat > 90 || intLat < -90){
-            lat = "0";
+        try{
+            numLat = Double.parseDouble(lat);
+            numLng = Double.parseDouble(lng);
+
+            //sanitising coordinates
+            if(lat==null || numLat > 90 || numLat < -90 || lng==null || numLng > 90 || numLng < -90){
+                Toast.makeText(AddJourneyActivity.this, "Please enter valid coordinates", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Uri myUri = Uri.parse("geo:"+lat+","+lng+"?q="+lat+","+lng+"("+name+")");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, myUri);
+                startActivity(mapIntent);
+            }
         }
-        if(lng==null || intLng > 90 || intLng < -90){
-            lng = "0";
+        catch (Exception e) {
+            Toast.makeText(AddJourneyActivity.this, "Please enter valid coordinates", Toast.LENGTH_SHORT).show();
         }
-
-        Uri myUri = Uri.parse("geo:"+lat+","+lng+"?q="+lat+","+lng+"("+name+")");
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, myUri);
-        startActivity(mapIntent);
-
-        first = null;
     }
 }
