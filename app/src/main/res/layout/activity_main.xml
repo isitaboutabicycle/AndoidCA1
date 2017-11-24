@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -12,52 +11,49 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
             android:id="@+id/mainWelcome"
             android:layout_margin="16dp"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-        <Button
-            android:id="@+id/historyButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:hapticFeedbackEnabled="true"
-            android:layout_margin="8dp"
-            android:text="View Journey History" />
-
-        <Button
-            android:id="@+id/journeyButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:hapticFeedbackEnabled="true"
-            android:layout_margin="8dp"
-            android:text="Create New Journey" />
 
         <Button
             android:id="@+id/apiButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="3"
             android:hapticFeedbackEnabled="true"
             android:layout_margin="8dp"
-            android:text="View Real Time Info" />
+            android:text="View Dublin Bikes Stations" />
+
+        <Button
+            android:id="@+id/journeyButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="3"
+            android:hapticFeedbackEnabled="true"
+            android:layout_margin="8dp"
+            android:text="Create A New Journey" />
+
+        <Button
+            android:id="@+id/historyButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="3"
+            android:hapticFeedbackEnabled="true"
+            android:layout_margin="8dp"
+            android:text="View Journey History" />
 
         <Button
             android:id="@+id/logoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
+            android:layout_weight="3"
             android:hapticFeedbackEnabled="true"
             android:layout_margin="32dp"
             android:text="Log Out" />
-
-    <!--<android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation" />-->
 
 </LinearLayout>

@@ -27,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Button buttonRegister;
     private EditText editTextEmail;
     private EditText editTextPassword;
+    private EditText editTextPassword2;
 
     private ProgressDialog progressDialog;
 
@@ -50,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editTextPassword2 = (EditText) findViewById(R.id.editTextPassword2);
 
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +69,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void registerUser() throws InterruptedException {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        String password2 = editTextPassword2.getText().toString().trim();
 
         if(TextUtils.isEmpty(email))
         {
@@ -76,6 +79,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if(TextUtils.isEmpty(password))
         {
             Toast.makeText(this, "Please enter your password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!TextUtils.equals(password, password2))
+        {
+            Toast.makeText(this, "The passwords must match!", Toast.LENGTH_SHORT).show();
             return;
         }
 

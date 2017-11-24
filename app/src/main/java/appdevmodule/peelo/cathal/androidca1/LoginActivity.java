@@ -29,6 +29,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -203,6 +204,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 finish();
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
+                            }
+                            else{
+                                Toast.makeText(LoginActivity.this, "Those login details are incorrect", Toast.LENGTH_SHORT).show();
                             }
 
                         }

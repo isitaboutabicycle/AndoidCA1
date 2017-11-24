@@ -57,7 +57,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
     private ArrayList<Bitmap> pics;
     private Calendar date;
     private String dateString;
-    //private GoogleApiClient mGoogleApiClient;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private final int LOCATION_PERMISSION_REQUEST = 1;
@@ -272,32 +271,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
         return image;
     }
 
-    private void getLocationPermission(){
-        myLocationPermission = false;
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED){
-            myLocationPermission = true;
-        }
-        else{
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST);
-        }
-    }
-
-    private void onRequestPermissionResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults){
-        myLocationPermission = false;
-        switch(requestCode){
-            case LOCATION_PERMISSION_REQUEST: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    myLocationPermission = true;
-                }
-            }
-        }
-    }
-
     //to fetch latest coordinates from FusedLocationProviderClient and fill them into the EditTexts
     private void getPoint(boolean mFirst){
         first = mFirst;
@@ -312,7 +285,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
             Toast.makeText(AddJourneyActivity.this, "This feature requires permission to access your location", Toast.LENGTH_SHORT).show();
         }
         else{
-
 
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -331,7 +303,6 @@ public class AddJourneyActivity extends AppCompatActivity implements View.OnClic
                             }
                             else{
                                 Toast.makeText(AddJourneyActivity.this, "No location available right now", Toast.LENGTH_SHORT).show();
-
                             }
                         }
                     });

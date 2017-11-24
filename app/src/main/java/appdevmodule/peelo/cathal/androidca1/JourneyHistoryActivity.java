@@ -7,11 +7,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.app.FragmentManager;
+import android.support.v4.view.ViewPager;
+import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -44,16 +48,13 @@ import java.util.Locale;
 
 public class JourneyHistoryActivity extends AppCompatActivity {
 
-    private int feedCode = 1;
     private ListView readout = null;
-    private SimpleDateFormat dateFormatter;
 
     private FirebaseUser user = null;
     private FirebaseDatabase database;
     private DatabaseReference ref;
     private ChildEventListener cel;
 
-    private ArrayList<Journey> journeyObjs;
     private ArrayList<String> journeysList;
     private refreshList async;
 
@@ -78,18 +79,7 @@ public class JourneyHistoryActivity extends AppCompatActivity {
         ref = database.getReference()
                 .child(user.getUid())
                 .child("journeys");
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
 
-        //showing initial list
-        /*setCel();
-        //adding a delay to avoid setting the list to the View before it is filled
-        try{
-            Thread.sleep(4000);
-        }
-        catch (Exception e){
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        refreshList();*/
         async = new refreshList();
         async.execute();
 
@@ -100,117 +90,12 @@ public class JourneyHistoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                /*setCel();
-                //adding a delay to avoid setting the list to the View before it is filled
-                try{
-                    Thread.sleep(4000);
-                }
-                catch (Exception e){
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-                refreshList();*/
                 async = new refreshList();
                 async.execute();
             }
         });
     }
 
-
-    /*private void setCel(){
-        //resetting list to avoid duplication
-        journeyObjs = new ArrayList<Journey>();
-
-        //hidden again in refreshList()
-        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-
-        cel = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                try{
-                    int mStartLat = (int)(long) dataSnapshot.child("startLat").getValue();
-                    int mStartLong = (int)(long) dataSnapshot.child("startLong").getValue();
-                    int mEndLat = (int)(long) dataSnapshot.child("endLat").getValue();
-                    int mEndLong = (int)(long) dataSnapshot.child("endLong").getValue();
-                    String mDate = dataSnapshot.child("date").getValue(String.class);
-                    ArrayList<String> mPics = (ArrayList<String>) dataSnapshot.child("pics").getValue();
-
-                    Journey journey = new Journey(mPics, mStartLat, mStartLong, mEndLat, mEndLong, mDate);
-
-                    //only add if it is not already in there
-                    if(!journeyObjs.contains(journey)){
-                        journeyObjs.add(journey);
-                    }
-
-                }catch(Exception e){
-                    Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(JourneyHistoryActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        };
-
-        //attaching listener to Firebase database
-        ref.addChildEventListener(cel);
-    }
-
-    private void refreshList(){
-
-        try {
-            try {
-                journeysList = new ArrayList<String>();
-                int size = journeyObjs.size();
-
-                //iterating over the objects
-                for(int i = 0; i < size; i++) {
-
-                    Journey j = journeyObjs.get(i);
-
-                    String parsedResponse =
-                            "Date:\t\t\t\t\t\t\t\t" + j.getDate() +
-                                    "\nStart coordinates:\t\t" + "("+j.getStartLat()+" , "+j.getStartLong()+")" +
-                                    "\nEnd coordinates:\t\t\t" + "("+j.getEndLat()+" , "+j.getEndLong()+")" +
-                                    "\nPictures attached:\t\t" + j.getPics().size();
-
-                    //saving node details
-                    journeysList.add(parsedResponse);
-                }
-            }
-            catch (Exception e){
-                Log.e("ERROR", e.getMessage(), e);
-                Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
-            }
-        }
-        catch(Exception e) {
-            Log.e("ERROR", e.getMessage(), e);
-            Toast.makeText(JourneyHistoryActivity.this, e.getMessage(), Toast.LENGTH_LONG);
-        }
-
-        //made visible in setCel()
-        findViewById(R.id.progressBar).setVisibility(View.GONE);
-
-        try{
-            ArrayAdapter adapter = new ArrayAdapter<String>(JourneyHistoryActivity.this, R.layout.station_list_view,
-                    journeysList
-            );
-
-            readout.setAdapter(adapter);
-        }
-        catch(Exception e){
-            Log.i("INFO", e.getMessage());
-        }
-    }*/
 
     class refreshList extends AsyncTask<Void, Void, String>{
 
@@ -220,7 +105,6 @@ public class JourneyHistoryActivity extends AppCompatActivity {
             findViewById(R.id.historyProgressBar).setVisibility(View.VISIBLE);
 
             //resetting list to avoid duplication
-            //journeyObjs = new ArrayList<Journey>();
             journeysList = new ArrayList<String>();
         }
 
